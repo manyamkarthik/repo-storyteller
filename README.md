@@ -25,18 +25,18 @@ Uses the open [`skills`](https://github.com/vercel-labs/skills) CLI (Node.js 22+
 
 ```bash
 # Interactive: pick your agent(s)
-npx skills add OWNER/repo-storyteller
+npx skills add manyamkarthik/repo-storyteller
 
 # Global install (every project) for a specific agent
-npx skills add OWNER/repo-storyteller -g -a claude-code
-npx skills add OWNER/repo-storyteller -g -a codex
-npx skills add OWNER/repo-storyteller -g -a opencode
-npx skills add OWNER/repo-storyteller -g -a cursor
-npx skills add OWNER/repo-storyteller -g -a gemini-cli
-npx skills add OWNER/repo-storyteller -g -a github-copilot
+npx skills add manyamkarthik/repo-storyteller -g -a claude-code
+npx skills add manyamkarthik/repo-storyteller -g -a codex
+npx skills add manyamkarthik/repo-storyteller -g -a opencode
+npx skills add manyamkarthik/repo-storyteller -g -a cursor
+npx skills add manyamkarthik/repo-storyteller -g -a gemini-cli
+npx skills add manyamkarthik/repo-storyteller -g -a github-copilot
 
 # Several agents at once
-npx skills add OWNER/repo-storyteller -g -a claude-code -a codex -a opencode
+npx skills add manyamkarthik/repo-storyteller -g -a claude-code -a codex -a opencode
 ```
 
 Leave out `-g` to install just for the current project.
@@ -46,20 +46,20 @@ Leave out `-g` to install just for the current project.
 Inside Claude Code:
 
 ```
-/plugin marketplace add OWNER/repo-storyteller
+/plugin marketplace add manyamkarthik/repo-storyteller
 /plugin install repo-storyteller@repo-storyteller
 ```
 
 ### One-line shell installer (no Node needed)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/OWNER/repo-storyteller/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/manyamkarthik/repo-storyteller/main/install.sh | bash
 ```
 
 This installs for every agent it finds on your machine. To pick specific ones:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/OWNER/repo-storyteller/main/install.sh | bash -s -- claude codex opencode
+curl -fsSL https://raw.githubusercontent.com/manyamkarthik/repo-storyteller/main/install.sh | bash -s -- claude codex opencode
 ```
 
 ### Manual install
@@ -76,7 +76,7 @@ Copy `skills/repo-storyteller/` into your agent's skills folder:
 | GitHub Copilot | `~/.copilot/skills/` | `.agents/skills/` |
 
 ```bash
-git clone https://github.com/OWNER/repo-storyteller.git
+git clone https://github.com/manyamkarthik/repo-storyteller.git
 cp -r repo-storyteller/skills/repo-storyteller ~/.claude/skills/
 ```
 

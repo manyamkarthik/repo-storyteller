@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # repo-storyteller installer
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/OWNER/repo-storyteller/main/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/manyamkarthik/repo-storyteller/main/install.sh | bash
 #   curl -fsSL .../install.sh | bash -s -- claude codex opencode
 # Agents: claude codex opencode cursor gemini copilot agents (all = every agent found)
 set -euo pipefail
 
-REPO="${REPO_STORYTELLER_REPO:-OWNER/repo-storyteller}"
+REPO="${REPO_STORYTELLER_REPO:-manyamkarthik/repo-storyteller}"
 BRANCH="${REPO_STORYTELLER_BRANCH:-main}"
 SKILL="repo-storyteller"
 
