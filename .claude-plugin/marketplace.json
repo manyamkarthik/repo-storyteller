@@ -1,0 +1,11 @@
+{
+  "name": "repo-storyteller",
+  "owner": { "name": "Karthik" },
+  "plugins": [
+    {
+      "name": "repo-storyteller",
+      "source": "./",
+      "description": "Explain any codebase like a story for a 5-year-old, with deep traces, term cards and interactive HTML story pages."
+    }
+  ]
+}

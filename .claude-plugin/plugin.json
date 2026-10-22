@@ -1,0 +1,8 @@
+{
+  "name": "repo-storyteller",
+  "version": "1.0.0",
+  "description": "Explain any codebase like a story for a 5-year-old: deep function-by-function traces, term cards (story, real meaning, why, what breaks), interactive HTML story pages and optional Excalidraw drawings.",
+  "author": { "name": "Karthik" },
+  "license": "MIT",
+  "keywords": ["eli5", "explain", "onboarding", "codebase", "teaching", "storytelling", "excalidraw"]
+}
