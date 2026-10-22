@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>repo-storyteller: ELI5 Codebase Explainer Skill for Claude Code, Codex &amp; OpenCode</title>
+<meta name="description" content="repo-storyteller is a free, open-source agent skill that explains any codebase like a story for a 5-year-old. It traces code function by function, explains terms like database indexes (and what breaks without them), and builds interactive HTML story pages. Works with Claude Code, Codex, OpenCode, Cursor, Gemini CLI and GitHub Copilot.">
+<meta name="keywords" content="explain codebase, ELI5 code explanation, code explainer skill, Claude Code skill, Codex skill, OpenCode skill, agent skills, SKILL.md, understand a repo, codebase onboarding, code walkthrough, learn to code, AI code explanation">
+<link rel="canonical" href="https://manyamkarthik.github.io/repo-storyteller/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="repo-storyteller: understand any codebase like a bedtime story">
+<meta property="og:description" content="An agent skill that explains code like you're 5, traces every function call, and builds interactive story pages. For Claude Code, Codex, OpenCode and more.">
+<meta property="og:url" content="https://manyamkarthik.github.io/repo-storyteller/">
+<meta property="og:image" content="https://manyamkarthik.github.io/repo-storyteller/social-preview.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="repo-storyteller: ELI5 codebase explainer skill">
+<meta name="twitter:description" content="Explain any repo like a story. Deep traces, term cards, interactive HTML pages. Claude Code · Codex · OpenCode.">
+<meta name="twitter:image" content="https://manyamkarthik.github.io/repo-storyteller/social-preview.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareSourceCode",
+  "name": "repo-storyteller",
+  "description": "An agent skill that explains any codebase like a story for a 5-year-old, with deep function-by-function traces, term cards and interactive HTML story pages.",
+  "codeRepository": "https://github.com/manyamkarthik/repo-storyteller",
+  "programmingLanguage": "Markdown",
+  "license": "https://opensource.org/licenses/MIT",
+  "author": {"@type": "Person", "name": "Karthik", "url": "https://github.com/manyamkarthik"},
+  "keywords": "explain codebase, ELI5, Claude Code skill, Codex skill, OpenCode skill, agent skills"
+}
+</script>
+<style>
+:root{--bg:#fffaf3;--card:#fff;--ink:#1f2328;--muted:#5b6470;--accent:#ff7a45;--accent2:#5b8def;--line:#eadfce}
+@media (prefers-color-scheme:dark){:root{--bg:#15171c;--card:#1e2128;--ink:#e8e6e3;--muted:#9aa3ad;--line:#2e333d}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:920px;margin:0 auto;padding:40px 16px 80px}
+h1{font-size:clamp(2rem,6vw,3.2rem);line-height:1.1;margin:.2em 0}
+h1 span{color:var(--accent)}
+.lead{font-size:1.2rem;color:var(--muted);max-width:44em}
+.btns a{display:inline-block;margin:8px 8px 0 0;padding:12px 20px;border-radius:999px;background:var(--accent);color:#fff;font-weight:700;text-decoration:none}
+.btns a.alt{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+pre{background:#1e2128;color:#e8e6e3;padding:14px 16px;border-radius:12px;overflow-x:auto;font-size:.9rem;position:relative}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin:24px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.card h3{margin:.2em 0}
+.agents{display:flex;flex-wrap:wrap;gap:8px}
+.agents span{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:.9rem}
+details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 16px;margin:10px 0}
+summary{cursor:pointer;font-weight:600}
+a{color:var(--accent2)}
+footer{color:var(--muted);font-size:.9rem;margin-top:40px}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <p>📖 open-source agent skill · MIT</p>
+  <h1>Understand any codebase<br><span>like a bedtime story.</span></h1>
+  <p class="lead"><b>repo-storyteller</b> is an ELI5 code explainer for AI coding agents. Ask it to explain a file, a function or a concept. It turns your repo into a story, traces every function call down to the bottom, and teaches the real engineering terms, including <i>what breaks without them</i>.</p>
+  <div class="btns">
+    <a href="demo/startup-story.html">▶ See a live demo</a>
+    <a class="alt" href="https://github.com/manyamkarthik/repo-storyteller">⭐ Star on GitHub</a>
+  </div>
+
+  <h2>Install in one line</h2>
+<pre><code>npx skills add manyamkarthik/repo-storyteller</code></pre>
+  <div class="agents"><span>Claude Code</span><span>Codex</span><span>OpenCode</span><span>Cursor</span><span>Gemini CLI</span><span>GitHub Copilot</span></div>
+  <p>Then ask your agent: <code>explain this repo like I'm 5</code></p>
+
+  <div class="grid">
+    <div class="card"><h3>🧸 Story world</h3>Your repo becomes a restaurant, a factory or a library, with characters that stay the same across every explanation.</div>
+    <div class="card"><h3>🔍 Deep trace</h3>It follows each call into your own functions all the way down, notes the inputs and outputs, and climbs back up. Every claim cites <code>file:line</code>.</div>
+    <div class="card"><h3>🧩 Term cards</h3>Every concept gets four parts: the story, what it really is, why it's needed here, and 💥 what breaks without it.</div>
+    <div class="card"><h3>🌐 Interactive pages</h3>A clickable flow map, expandable nested traces, annotated code, quizzes, a progress bar and dark mode.</div>
+    <div class="card"><h3>🎢 Never boring</h3>Hooks, cliffhangers, "predict what happens" quizzes, and a choose-your-next-path menu.</div>
+    <div class="card"><h3>✏️ Excalidraw</h3>If an Excalidraw MCP server is connected, it draws the call journey and term scenes for you.</div>
+  </div>
+
+  <h2>FAQ</h2>
+  <details><summary>How is this different from just asking my agent "explain this code"?</summary><p>Plain prompts give a flat summary. repo-storyteller forces a depth-first trace through every function on the path, cites real lines, explains each term with a concrete failure scenario, and produces a page you can come back to.</p></details>
+  <details><summary>Does it work with Codex and OpenCode, not just Claude Code?</summary><p>Yes. It follows the open Agent Skills <code>SKILL.md</code> standard and installs into each agent's skills folder via <code>npx skills</code>, the shell installer, or a manual copy.</p></details>
+  <details><summary>Which languages does it support?</summary><p>Any language your agent can read: Python, TypeScript, Go, Rust, Java and more. The trace follows imports and calls, whatever the language.</p></details>
+  <details><summary>Is it free?</summary><p>Yes, it's MIT licensed.</p></details>
+
+  <footer>Made by <a href="https://github.com/manyamkarthik">Karthik</a> · <a href="https://github.com/manyamkarthik/repo-storyteller">GitHub</a> · <a href="https://github.com/manyamkarthik/repo-storyteller/issues">Ideas &amp; issues</a></footer>
+</main>
+</body>
+</html>

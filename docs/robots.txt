@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://manyamkarthik.github.io/repo-storyteller/sitemap.xml

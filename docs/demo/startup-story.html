@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Library Opening Day</title>
+<meta name="description" content="Demo output of repo-storyteller: a FastAPI lifespan startup explained like a story for a 5-year-old, traced function by function, with term cards for lifespan, retries and database indexes.">
+<link rel="canonical" href="https://manyamkarthik.github.io/repo-storyteller/demo/startup-story.html">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+:root{--bg:#fffaf3;--card:#ffffff;--ink:#1f2328;--muted:#5b6470;--accent:#ff7a45;--accent2:#5b8def;--line:#eadfce;--story:#fff1e0;--real:#eef4ff;--why:#eafaf0;--break:#ffecec}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15171c;--card:#1e2128;--ink:#e8e6e3;--muted:#9aa3ad;--line:#2e333d;--story:#2b2318;--real:#1b2436;--why:#16281e;--break:#2e1a1a}}
+:root[data-theme="dark"]{--bg:#15171c;--card:#1e2128;--ink:#e8e6e3;--muted:#9aa3ad;--line:#2e333d;--story:#2b2318;--real:#1b2436;--why:#16281e;--break:#2e1a1a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:24px 16px 80px}
+header h1{font-size:1.9rem;margin:.2em 0}
+.banner{background:var(--accent2);color:#fff;padding:8px 14px;border-radius:10px;font-size:.9rem}
+.banner a{color:#fff;font-weight:700}
+.tldr{background:var(--card);border-left:5px solid var(--accent);padding:12px 16px;border-radius:10px}
+#progress{position:sticky;top:0;height:6px;background:var(--line);z-index:9}
+#progress div{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .3s}
+.map{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin:20px 0;overflow-x:auto}
+.map .hint{color:var(--muted);font-size:.85rem}
+.cast{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:16px 0}
+.cast div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;font-size:.92rem}
+details.chapter{background:var(--card);border:1px solid var(--line);border-radius:14px;margin:16px 0;padding:4px 16px}
+details.chapter>summary{cursor:pointer;font-weight:700;font-size:1.15rem;padding:12px 0;list-style:none}
+details.chapter>summary::before{content:"▸ ";color:var(--accent)}
+details[open].chapter>summary::before{content:"▾ "}
+details.chapter.done>summary::after{content:" ✓";color:#2ea043}
+details.sub{border-left:3px dashed var(--accent2);margin:12px 0 12px 8px;padding:2px 12px;border-radius:0 10px 10px 0;background:color-mix(in srgb,var(--real) 50%,transparent)}
+details.sub>summary{cursor:pointer;font-weight:600;padding:6px 0}
+.crumb{font-family:ui-monospace,Menlo,monospace;font-size:.8rem;color:var(--muted);background:var(--bg);padding:4px 8px;border-radius:6px;display:inline-block;margin:4px 0 8px;word-break:break-all}
+.hook{font-style:italic;font-size:1.05rem}
+.cliff{border-top:1px dashed var(--line);margin-top:12px;padding-top:8px;color:var(--muted);font-style:italic}
+pre{border-radius:10px;overflow-x:auto;font-size:.85rem}
+.notes{list-style:none;padding:0}
+.notes li{margin:6px 0}
+.io{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:.92rem;background:var(--bg);padding:10px;border-radius:8px;margin:10px 0}
+.io b{color:var(--accent2)}
+.term{border:1px solid var(--line);border-radius:12px;margin:16px 0;overflow:hidden}
+.term h4{margin:0;padding:10px 14px;background:var(--accent);color:#fff}
+.term .beat{padding:10px 14px}
+.beat.story{background:var(--story)}.beat.real{background:var(--real)}.beat.why{background:var(--why)}.beat.break{background:var(--break)}
+.quiz{background:var(--card);border:2px dashed var(--accent2);border-radius:12px;padding:12px 16px;margin:16px 0}
+.quiz button,.next button,.theme{font:inherit;cursor:pointer;border:0;border-radius:999px;padding:8px 16px;background:var(--accent2);color:#fff;margin:4px 4px 4px 0;text-align:left}
+.quiz .ans{display:none;margin-top:8px}
+.quiz.show .ans{display:block}
+.next code{display:block;margin-top:4px;font-size:.8rem;opacity:.85}
+.theme{position:fixed;right:12px;bottom:12px;background:var(--card);color:var(--ink);border:1px solid var(--line)}
+a{color:var(--accent2)}
+</style>
+</head>
+<body>
+<div id="progress"><div></div></div>
+<div class="wrap">
+<p class="banner">🧪 This is a <b>real demo</b> made by the <a href="https://github.com/manyamkarthik/repo-storyteller">repo-storyteller</a> skill for the sample app in <code>examples/tiny-notes-api</code>.<br>Prompt: <i>"explain the lifespan in app.py like I'm 5 and trace every function it calls"</i></p>
+
+<header>
+  <div class="crumb">🗺️ tiny-notes-api · app startup</div>
+  <h1>📚 Library Opening Day</h1>
+  <p class="tldr"><b>In one breath:</b> before the app answers a single request, <code>lifespan</code> reads the settings, opens the database (trying again if it fails), builds the notes shelf with a fast-lookup label on it, hands that open database to every request, and closes it neatly when the app shuts down.</p>
+</header>
+
+<h2>🎭 Meet the cast</h2>
+<div class="cast">
+  <div>🏛️ <b>The Library</b><br>the whole app (<code>FastAPI</code>)</div>
+  <div>🗝️ <b>Opening Olive</b><br>the morning routine (<code>lifespan</code>)</div>
+  <div>📋 <b>The Clipboard</b><br>settings (<code>Settings</code>)</div>
+  <div>🚪 <b>Door-Knocker Dan</b><br><code>connect_with_retry</code></div>
+  <div>🔨 <b>Shelf-Builder Sam</b><br><code>create_tables</code></div>
+  <div>📦 <b>The Storeroom</b><br>the SQLite database</div>
+</div>
+
+<section class="map">
+  <div class="hint">🗺️ Tap a box to jump to its chapter.</div>
+  <pre class="mermaid">
+flowchart TD
+  A["🗝️ app.py · lifespan()"] -->|nothing| B["📋 load_settings()"]
+  B -->|Settings| A
+  A -->|Settings| C["🏗️ init_db()"]
+  C -->|path, retries| D["🚪 connect_with_retry()"]
+  D -->|open connection| C
+  C -->|connection| E["🔨 create_tables()"]
+  C -->|connection| A
+  A -->|stores it on app.state.db| F["🌙 yield → close()"]
+  click A call goTo("ch1")
+  click B call goTo("ch1-1")
+  click C call goTo("ch2")
+  click D call goTo("ch2-1")
+  click E call goTo("ch2-2")
+  click F call goTo("ch3")
+  </pre>
+</section>
+
+<!-- CHAPTER 1 -->
+<details class="chapter" id="ch1" open>
+  <summary>Chapter 1: Olive unlocks the library</summary>
+  <div class="crumb">app.py:lifespan</div>
+  <p class="hook">The library has a strict rule: <b>no visitors until the morning routine is finished.</b> Who does the routine, and what's on her list?</p>
+  <p>📖 Every morning, <b>Opening Olive</b> arrives before anyone else. She grabs <b>the Clipboard</b> (it says where the storeroom is and how many times to knock), gets the storeroom open, and leaves the key on the front desk where every librarian can reach it. Then she says "OK, open the doors!" and waits. At night she comes back and locks up.</p>
+
+  <pre><code class="language-python">  9  @asynccontextmanager
+ 10  async def lifespan(app: FastAPI):
+ 11      settings = load_settings()
+ 12      app.state.db = init_db(settings)
+ 13      yield
+ 14      app.state.db.close()
+ ...
+ 17  app = FastAPI(lifespan=lifespan)</code></pre>
+  <ol class="notes">
+    <li>① <b>line 9</b>: <code>@asynccontextmanager</code> turns this function into a "before and after" routine. Everything above <code>yield</code> runs at startup, and everything below it runs at shutdown.</li>
+    <li>② <b>line 11</b>: reads the Clipboard. <a href="#ch1-1">↳ dive in</a></li>
+    <li>③ <b>line 12</b>: opens the database and puts it on <code>app.state.db</code>, the front desk every request can reach. <a href="#ch2">↳ that's Chapter 2</a></li>
+    <li>④ <b>line 13</b>: <code>yield</code> = "doors open!" The app now serves requests and this function pauses here.</li>
+    <li>⑤ <b>line 14</b>: runs only when the app shuts down. <a href="#ch3">↳ Chapter 3</a></li>
+    <li>⑥ <b>line 17</b>: tells FastAPI "use Olive's routine" by passing <code>lifespan=lifespan</code>.</li>
+  </ol>
+  <div class="io"><b>In</b><span><code>app</code>: the FastAPI app itself</span><b>Out</b><span>Nothing is returned. Side effect: <code>app.state.db</code> holds an open connection while the app runs.</span></div>
+
+  <details class="sub" id="ch1-1">
+    <summary>↳ Going deeper: load_settings()</summary>
+    <div class="crumb">app.py:lifespan → settings.py:load_settings</div>
+    <p>📖 The Clipboard isn't written by hand. Olive copies it from <b>notes taped to the library door</b> (environment variables). If a note is missing, she writes a sensible default.</p>
+<pre><code class="language-python"> 11  def load_settings() -> Settings:
+ 12      return Settings(
+ 13          db_path=os.getenv("NOTES_DB", "notes.db"),
+ 14          max_retries=int(os.getenv("NOTES_DB_RETRIES", "3")),
+ 15      )</code></pre>
+    <ol class="notes">
+      <li>① <b>line 13</b>: storeroom location. It uses <code>NOTES_DB</code> if set, otherwise <code>notes.db</code>.</li>
+      <li>② <b>line 14</b>: how many times to knock. Environment variables are always text, so <code>int(...)</code> turns <code>"3"</code> into the number 3.</li>
+      <li>③ <b>settings.py:5</b>: <code>@dataclass(frozen=True)</code> means once the Clipboard is filled in, <b>nobody can scribble on it</b>.</li>
+    </ol>
+    <div class="io"><b>In</b><span>nothing (reads <code>NOTES_DB</code>, <code>NOTES_DB_RETRIES</code> from the environment)</span><b>Out</b><span><code>Settings(db_path="notes.db", max_retries=3)</code> by default</span></div>
+    <p><b>⬆️ Climbing back up:</b> the Settings object comes back to <code>app.py:11</code> and is stored in <code>settings</code>, ready for line 12.</p>
+  </details>
+
+  <div class="term" id="term-lifespan">
+    <h4>🧩 Lifespan</h4>
+    <div class="beat story">📖 <b>The story:</b> Olive's "open in the morning, lock up at night" routine. Visitors only come in between.</div>
+    <div class="beat real">🔧 <b>What it really is:</b> a FastAPI hook that runs setup code once before the server accepts requests, and cleanup code once when it stops. The <code>yield</code> marks the boundary. <span class="crumb">app.py:9–17</span></div>
+    <div class="beat why">🎯 <b>Why we need it here:</b> opening a database is slow. We want to do it <b>once</b> and share the connection, not once per request.</div>
+    <div class="beat break">💥 <b>What breaks without it:</b> you'd open the database inside every request (slower, and you can hit "too many open files"), or open it at import time, where tests and reloads leave connections dangling and nothing ever calls <code>close()</code>.</div>
+  </div>
+  <p class="cliff">Olive has the Clipboard. Now she walks to the storeroom… but what if the door is stuck? 🚪</p>
+</details>
+
+<!-- CHAPTER 2 -->
+<details class="chapter" id="ch2">
+  <summary>Chapter 2: Getting into the storeroom</summary>
+  <div class="crumb">app.py:lifespan → db.py:init_db</div>
+  <p class="hook"><code>init_db</code> is only three lines long. So why does it get a whole chapter?</p>
+  <p>📖 Olive doesn't open the storeroom herself. She hands the Clipboard to the building crew: <b>Door-Knocker Dan</b> gets the door open, then <b>Shelf-Builder Sam</b> makes sure the shelves exist. Then Dan's key comes back to Olive.</p>
+<pre><code class="language-python"> 28  def init_db(settings: Settings) -> sqlite3.Connection:
+ 29      conn = connect_with_retry(settings.db_path, settings.max_retries)
+ 30      create_tables(conn)
+ 31      return conn</code></pre>
+  <ol class="notes">
+    <li>① <b>line 29</b>: hands Dan the storeroom location and the knock count. <a href="#ch2-1">↳ dive in</a></li>
+    <li>② <b>line 30</b>: Sam builds the shelves with that open connection. <a href="#ch2-2">↳ dive in</a></li>
+    <li>③ <b>line 31</b>: the open connection goes back up to <code>lifespan</code>.</li>
+  </ol>
+  <div class="io"><b>In</b><span><code>settings</code>: the frozen Settings object</span><b>Out</b><span>an open <code>sqlite3.Connection</code>, with tables and index ready</span></div>
+
+  <details class="sub" id="ch2-1">
+    <summary>↳ Going deeper: connect_with_retry()</summary>
+    <div class="crumb">app.py:lifespan → db.py:init_db → db.py:connect_with_retry</div>
+    <p>📖 Dan knocks. If nobody answers, he doesn't give up right away: he waits a little, knocks again, waits a bit <i>longer</i>, and knocks one last time. Only after the last knock fails does he run back shouting "the storeroom is broken!"</p>
+<pre><code class="language-python">  7  def connect_with_retry(path: str, retries: int) -> sqlite3.Connection:
+  8      for attempt in range(1, retries + 1):
+  9          try:
+ 10              conn = sqlite3.connect(path, check_same_thread=False)
+ 11              conn.execute("SELECT 1")
+ 12              return conn
+ 13          except sqlite3.OperationalError:
+ 14              if attempt == retries:
+ 15                  raise
+ 16              time.sleep(0.5 * attempt)</code></pre>
+    <ol class="notes">
+      <li>① <b>line 8</b>: with <code>retries=3</code>, <code>attempt</code> goes 1, 2, 3.</li>
+      <li>② <b>line 10</b>: opens the SQLite file (creates it if missing). <code>check_same_thread=False</code> lets the connection be shared, because FastAPI may run requests on different threads.</li>
+      <li>③ <b>line 11</b>: a tiny "are you there?" query. Opening the file isn't proof that it works.</li>
+      <li>④ <b>line 12</b>: success, so hand back the connection and stop the loop.</li>
+      <li>⑤ <b>lines 14–15</b>: on the last attempt, give up and let the error travel up to <code>lifespan</code>. The app refuses to start.</li>
+      <li>⑥ <b>line 16</b>: wait 0.5 s after the 1st failure, 1.0 s after the 2nd. The waits get longer each time.</li>
+    </ol>
+    <div class="io"><b>In</b><span><code>path="notes.db"</code>, <code>retries=3</code></span><b>Out</b><span>an open connection, or an <code>OperationalError</code> after 3 failed tries (e.g. the folder doesn't exist or the file is locked)</span></div>
+    <p><b>⬆️ Climbing back up:</b> the connection returns to <code>db.py:29</code> as <code>conn</code>.</p>
+  </details>
+
+  <div class="term" id="term-retry">
+    <h4>🧩 Retry with backoff</h4>
+    <div class="beat story">📖 <b>The story:</b> Dan knocks, waits, knocks again, waits longer. He's patient, but not forever.</div>
+    <div class="beat real">🔧 <b>What it really is:</b> repeating an operation that can fail temporarily, waiting longer between tries ("backoff"), and giving up after a fixed number of attempts. <span class="crumb">db.py:7–16</span></div>
+    <div class="beat why">🎯 <b>Why we need it here:</b> in real deployments the database is often a few seconds slower to start than the app, or a file is briefly locked.</div>
+    <div class="beat break">💥 <b>What breaks without it:</b> one hiccup at startup crashes the app. In Docker or Kubernetes you'd see the container restart in a loop. With no limit on retries, it would hang forever instead of failing loudly.</div>
+  </div>
+
+  <details class="sub" id="ch2-2">
+    <summary>↳ Going deeper: create_tables()</summary>
+    <div class="crumb">app.py:lifespan → db.py:init_db → db.py:create_tables</div>
+    <p>📖 Sam checks: "Is there a <b>notes shelf</b>? No? I'll build one." Then he does something clever: he makes a <b>name-tag drawer</b> that lists whose notes sit where, so finding someone's notes doesn't mean reading every note on the shelf.</p>
+<pre><code class="language-python"> 19  def create_tables(conn: sqlite3.Connection) -> None:
+ 20      conn.execute(
+ 21          "CREATE TABLE IF NOT EXISTS notes ("
+ 22          "id INTEGER PRIMARY KEY, owner TEXT NOT NULL, body TEXT NOT NULL)"
+ 23      )
+ 24      conn.execute("CREATE INDEX IF NOT EXISTS idx_notes_owner ON notes(owner)")
+ 25      conn.commit()</code></pre>
+    <ol class="notes">
+      <li>① <b>lines 20–23</b>: build the <code>notes</code> table only <b>if it doesn't exist</b>, so restarting the app never wipes your data.</li>
+      <li>② <b>line 24</b>: build an <b>index</b> on <code>owner</code>. This is the name-tag drawer. <a href="#term-index">↳ term card</a></li>
+      <li>③ <b>line 25</b>: <code>commit()</code> = "save!" Without it, the changes might not stick.</li>
+    </ol>
+    <div class="io"><b>In</b><span><code>conn</code>: the open connection</span><b>Out</b><span>nothing returned. Side effect: the <code>notes</code> table and <code>idx_notes_owner</code> index exist in the file.</span></div>
+    <p><b>⬆️ Climbing back up:</b> back to <code>db.py:31</code>, where <code>init_db</code> returns the connection → <code>app.py:12</code> stores it on <code>app.state.db</code>.</p>
+  </details>
+
+  <div class="term" id="term-index">
+    <h4>🧩 Database index</h4>
+    <div class="beat story">📖 <b>The story:</b> a million notes on one long shelf. A visitor asks for "all of Kid's notes." Without the name-tag drawer, Sam reads <i>every single note</i>. With it, he opens the drawer at "K" and walks straight to the right spots.</div>
+    <div class="beat real">🔧 <b>What it really is:</b> a separate sorted structure (a B-tree) that maps a column's values to the rows that have them, so the database can jump to matching rows instead of scanning the whole table. <span class="crumb">db.py:24</span>, used by the query at <span class="crumb">app.py:22–24</span></div>
+    <div class="beat why">🎯 <b>Why we need it here:</b> the only endpoint, <code>GET /notes/{owner}</code>, filters by <code>owner</code>. That column is exactly what the index sorts.</div>
+    <div class="beat break">💥 <b>What breaks without it:</b> SQLite's plan changes from <code>SEARCH notes USING INDEX idx_notes_owner</code> to <code>SCAN notes</code>. We measured it on 1,000,000 notes: <b>~53 ms per lookup without the index vs ~0.02 ms with it</b>, roughly 2,000× slower. Under load, that's the difference between snappy and timing out. (Trade-off: every insert also updates the index, so writes get slightly slower.)</div>
+  </div>
+  <p class="cliff">The shelf is built and the key is on the front desk. The doors open… but who locks up at night? 🌙</p>
+</details>
+
+<div class="quiz">
+  <b>❓ Predict it:</b> you set <code>NOTES_DB=/no/such/folder/notes.db</code> and start the app. What happens, and after how long?<br>
+  <button onclick="this.parentElement.classList.toggle('show')">Reveal answer</button>
+  <div class="ans">SQLite can't create a file in a folder that doesn't exist, so <code>connect</code> raises <code>OperationalError</code>. Dan waits 0.5 s, then 1.0 s, fails a 3rd time, and re-raises (<span class="crumb">db.py:14–16</span>). The error travels up through <code>init_db</code> into <code>lifespan</code>, so <b>the app fails to start after about 1.5 seconds</b> and never serves a request.</div>
+</div>
+
+<!-- CHAPTER 3 -->
+<details class="chapter" id="ch3">
+  <summary>Chapter 3: Doors open, and closing time</summary>
+  <div class="crumb">app.py:lifespan (after yield)</div>
+  <p class="hook">Olive said "doors open!" at <code>yield</code>, then just… stopped? Where did she go?</p>
+  <p>📖 Olive sits by the door the whole day. Visitors come and go, and every librarian grabs the key from the front desk (<code>request.app.state.db</code> at <span class="crumb">app.py:22</span>). When the library closes, Olive wakes up exactly where she paused and <b>locks the storeroom</b>.</p>
+<pre><code class="language-python"> 13      yield
+ 14      app.state.db.close()</code></pre>
+  <ol class="notes">
+    <li>① <b>line 13</b>: the function is frozen here for the whole life of the server.</li>
+    <li>② <b>line 14</b>: on shutdown (Ctrl+C, deploy, reload), close the connection so all writes are flushed and the file isn't left locked.</li>
+  </ol>
+  <div class="io"><b>In</b><span>the shutdown signal from the server</span><b>Out</b><span>the database connection is closed cleanly</span></div>
+  <p><b>🎯 Why should I care?</b> When you add a cache, an HTTP client, or a background worker later, it goes in exactly the same place: create it above <code>yield</code>, clean it up below.</p>
+  <p class="cliff">You now know everything that happens <i>before</i> the first visitor. Next: what happens when one actually walks in? 🚶</p>
+</details>
+
+<div class="quiz">
+  <b>❓ Predict it:</b> you delete line 24 (the index), restart, and the table already has the index from yesterday. Is the app slow now?<br>
+  <button onclick="this.parentElement.classList.toggle('show')">Reveal answer</button>
+  <div class="ans">No, not yet! The index already lives inside <code>notes.db</code>. Line 24 only says "create it <i>if it doesn't exist</i>". The slowdown hits only on a <b>fresh</b> database (a new machine, tests, a new environment), which makes it a sneaky bug.</div>
+</div>
+
+<section class="next">
+  <h2>🚪 Choose your next path</h2>
+  <button onclick="copyNext(this)">🚶 A visitor arrives: trace a request<code>explain list_notes in app.py and trace the request</code></button>
+  <button onclick="copyNext(this)">🧵 Why check_same_thread=False?<code>explain check_same_thread in db.py and what breaks without it</code></button>
+  <button onclick="copyNext(this)">🧪 How would I test this startup?<code>explain how to test the lifespan in app.py like I'm 5</code></button>
+</section>
+
+<section>
+  <h2>📚 Glossary</h2>
+  <ul>
+    <li><a href="#term-lifespan">Lifespan</a>: setup before requests, cleanup after shutdown.</li>
+    <li><a href="#term-retry">Retry with backoff</a>: try again, waiting longer each time, then give up.</li>
+    <li><a href="#term-index">Database index</a>: a sorted lookup that skips scanning every row.</li>
+  </ul>
+  <p style="color:var(--muted);font-size:.9rem">Made with <a href="https://github.com/manyamkarthik/repo-storyteller">repo-storyteller</a>, an ELI5 codebase explainer skill for Claude Code, Codex, OpenCode and more.</p>
+</section>
+</div>
+
+<button class="theme" onclick="toggleTheme()" aria-label="Toggle theme">🌓</button>
+
+<script>
+mermaid.initialize({startOnLoad:true,securityLevel:'loose',theme:matchMedia('(prefers-color-scheme: dark)').matches?'dark':'default'});
+hljs.highlightAll();
+function goTo(id){const el=document.getElementById(id);if(!el)return;let p=el;while(p){if(p.tagName==='DETAILS')p.open=true;p=p.parentElement}el.scrollIntoView({behavior:'smooth',block:'start'})}
+document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();goTo(a.getAttribute('href').slice(1))}));
+function copyNext(b){const c=b.querySelector('code');const t=c.dataset.t||c.textContent;c.dataset.t=t;try{navigator.clipboard.writeText(t);c.textContent='✓ copied: '+t}catch(e){}}
+function toggleTheme(){const r=document.documentElement;r.dataset.theme=r.dataset.theme==='dark'?'light':'dark'}
+const KEY='storyteller:'+location.pathname,chapters=[...document.querySelectorAll('details.chapter')];
+let read={};try{read=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+function update(){chapters.forEach(c=>c.classList.toggle('done',!!read[c.id]));const n=chapters.filter(c=>read[c.id]).length;document.querySelector('#progress div').style.width=(chapters.length?100*n/chapters.length:0)+'%'}
+chapters.forEach(c=>c.addEventListener('toggle',()=>{if(c.open){read[c.id]=1;try{localStorage.setItem(KEY,JSON.stringify(read))}catch(e){}update()}}));
+chapters.filter(c=>c.open).forEach(c=>read[c.id]=1);update();
+</script>
+</body>
+</html>
